@@ -1,11 +1,11 @@
 use std::io::stdin;
 #[derive(Debug)]
-struct Vistor {
+struct Visitor {
     name: String,
     greeting: String
 }   
 
-impl Vistor {
+impl Visitor {
     fn new(name: &str, greeting: &str) -> Self {
         Self {
             name: name.to_lowercase(),
@@ -30,22 +30,34 @@ fn what_is_your_name () -> String {
 
 }
 fn main() {
-    println!("Hello, whats your name?");
-    let name = what_is_your_name();
+    loop {
+        println!("Hello, whats your name? (Leave empty and press ENTER to quit)");
+        let name = what_is_your_name();
 
-    let visitor_list = vec! [
-        Vistor::new("bert", "Hello Bert, enjoy"),
-        Vistor::new("steve", "Hello Steve, enjoy"),
-        Vistor::new("michael", "Hello Micheal, enjoy"),
-    ];
+        let mut visitor_list = Vec::new();
+        visitor_list.push(Visitor::new("Bert", "Hello Bert, enjoy your treehouse"));
+        visitor_list.push(Visitor::new("Steve", "Hello Steve, enjoy your treehouse"));
+        visitor_list.push(Visitor::new("Tim", "Hello Tim, enjoy your treehouse"));
+        
+        let mut _allow_them_in = false;
 
-    let mut _allow_them_in = false;
+        // checks to see of the option has data and makes the contents of the option available to the code in the clause visitor 
+        let known_visitor = visitor_list
+            .iter()
+            .find(|visitor| visitor.name == name);
 
-    let known_visitor = visitor_list
-        .iter()
-        .find(|visitor| visitor.name == name);
-    match known_visitor {
-        Some(visitor) => visitor.greet_visitor(),
-        None => println!("You are nor on the visitor list, leave.")
+        match known_visitor {
+            Some(visitor) => visitor.greet_visitor(),
+            None => {
+                if name.is_empty() {
+                    break;
+                } else {
+                    println!("{} is not on the visitor_list.", name);
+                    visitor_list.push(Visitor::new(&name, "New Friend"));
+                    println!("The final list of Visitors");
+                    println!("{:#?}", visitor_list);
+                }
+            }
+         }
     }
 }
